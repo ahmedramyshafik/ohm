@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ohm's Law & Power Lab | Ahmed AI</title>
+    <style>
+        :root {
+            --primary-color: #0f172a;
+            --accent-color: #3498db;
+            --bg-color: #f4f7f6;
+            --text-color: #333;
+            --gold: #f1c40f;
+            --danger: #e74c3c;
+            --success: #2ecc71;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            color: var(--text-color);
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-top: 8px solid var(--primary-color);
+            overflow: hidden;
+        }
+
+        .animated-title {
+            text-align: center;
+            font-size: 2em;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-top: 0;
+            margin-bottom: 25px;
+        }
+
+        .panel {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 20px;
+        }
+
+        .panel h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 8px;
+            font-size: 1em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Parameter Table Fitting Styles */
+        .table-responsive {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        table.fit-table {
+            width: 100%;
+            table-layout: fixed;
+            border-collapse: collapse;
+            font-size: 0.8em;
+        }
+
+        table.fit-table th, table.fit-table td {
+            border: 1px solid #cbd5e1;
+            padding: 6px 4px;
+            text-align: center;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        table.fit-table th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: bold;
+        }
+
+        table.fit-table tr:nth-child(even) { background-color: #f1f5f9; }
+
+        /* Specific Column Widths */
+        table.fit-table col.col-sym { width: 12%; }
+        table.fit-table col.col-qty { width: 22%; }
+        table.fit-table col.col-unit { width: 18%; }
+        table.fit-table col.col-form { width: 20%; }
+        table.fit-table col.col-eff { width: 28%; }
+
+        @media (max-width: 500px) {
+            table.fit-table {
+                font-size: 0.72em;
+            }
+            table.fit-table th, table.fit-table td {
+                padding: 5px 2px;
+            }
+            .container { padding: 12px; }
+        }
+
+        /* Takeaways / Knowledge Box */
+        .knowledge-list {
+            margin: 10px 0 0 0;
+            padding-left: 20px;
+            line-height: 1.6;
+            font-size: 0.9em;
+            color: #334155;
+        }
+
+        .knowledge-list li {
+            margin-bottom: 8px;
+        }
+
+        /* Dynamic Visualizer & Controls */
+        .visualizer {
+            height: 110px;
+            background: #0f172a;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .electron-flow {
+            position: absolute;
+            width: 100%;
+            height: 4px;
+            background: repeating-linear-gradient(90deg, var(--gold) 0, var(--gold) 10px, transparent 10px, transparent 20px);
+            animation: flow 1s linear infinite;
+        }
+
+        @keyframes flow {
+            from { background-position: 0 0; }
+            to { background-position: -40px 0; }
+        }
+
+        .bulb-icon {
+            font-size: 45px;
+            z-index: 2;
+            transition: 0.3s;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        @media (max-width: 600px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        .stat-card {
+            background: var(--primary-color);
+            color: white;
+            padding: 10px 5px;
+            border-radius: 8px;
+            text-align: center;
+            font-family: monospace;
+            font-size: 0.85em;
+            border-bottom: 4px solid var(--accent-color);
+        }
+
+        .stat-card.gold { border-bottom-color: var(--gold); }
+        .stat-card.danger { border-bottom-color: var(--danger); }
+        .stat-card.success { border-bottom-color: var(--success); }
+
+        .stat-val {
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-top: 4px;
+        }
+
+        .control-group {
+            margin-bottom: 12px;
+        }
+
+        .control-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            cursor: pointer;
+        }
+
+        /* Quiz Section */
+        .quiz-box {
+            background: #f8fafc;
+            border: 2px dashed var(--accent-color);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 25px;
+            text-align: center;
+        }
+
+        .quiz-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
+            transition: 0.3s;
+            font-size: 0.9em;
+        }
+
+        .quiz-btn:hover { background: var(--accent-color); }
+        #quizResponse { margin-top: 12px; font-weight: bold; min-height: 24px; }
+
+        .copyright-footer {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 0.8em;
+            color: #94a3b8;
+            border-top: 1px solid #eee;
+            padding-top: 12px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1 class="animated-title">Ohm’s Law & Power Lab</h1>
+    <p class="subtitle">Mastering Voltage (V), Current (I), Resistance (R), and Power (P)</p>
+
+    <!-- 1. FIRST BOX: Parameter Relationship Matrix -->
+    <div class="panel">
+        <h3>Parameter Relationship Matrix</h3>
+        <div class="table-responsive">
+            <table class="fit-table">
+                <colgroup>
+                    <col class="col-sym">
+                    <col class="col-qty">
+                    <col class="col-unit">
+                    <col class="col-form">
+                    <col class="col-eff">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>Symbol</th>
+                        <th>Quantity</th>
+                        <th>Unit</th>
+                        <th>Formula</th>
+                        <th>Effect of Increasing</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>V</strong></td>
+                        <td>Voltage</td>
+                        <td>Volts (V)</td>
+                        <td>V = I × R</td>
+                        <td>Increases Current (I) & Power (P)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>I</strong></td>
+                        <td>Current</td>
+                        <td>Amperes (A)</td>
+                        <td>I = V / R</td>
+                        <td>Increases Power (P) output</td>
+                    </tr>
+                    <tr>
+                        <td><strong>R</strong></td>
+                        <td>Resistance</td>
+                        <td>Ohms (Ω)</td>
+                        <td>R = V / I</td>
+                        <td>Decreases Current (I) & Power (P)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>P</strong></td>
+                        <td>Power</td>
+                        <td>Watts (W)</td>
+                        <td>P = V × I</td>
+                        <td>Measures total energy/sec</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 2. UNDER FIRST BOX: What We Know After Reading This Matrix -->
+    <div class="panel">
+        <h3>What We Know After Reading This Matrix</h3>
+        <ul class="knowledge-list">
+            <li><strong>Voltage (V):</strong> Acts as the pressure pushing electrical charges through a circuit. Higher Voltage results in greater Current flow and increased Power consumption.</li>
+            <li><strong>Current (I):</strong> Represents the flow rate of electric charge. It is directly proportional to Voltage and inversely proportional to Resistance.</li>
+            <li><strong>Resistance (R):</strong> Opposes current flow within the circuit. Increasing Resistance decreases Current and total Power output.</li>
+            <li><strong>Power (P):</strong> Measures the total electrical work performed per second ($P = V \times I$), combining force (Voltage) and flow rate (Current).</li>
+        </ul>
+    </div>
+
+    <!-- 3. THE GAME / SIMULATOR -->
+    <div class="panel">
+        <h3>Circuit Visualizer Game</h3>
+        
+        <div class="visualizer">
+            <div class="electron-flow" id="wireFlow"></div>
+            <div class="bulb-icon" id="bulb">💡</div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div>Voltage (V)</div>
+                <div class="stat-val"><span id="valV">6.0</span>V</div>
+            </div>
+            <div class="stat-card gold">
+                <div>Current (I)</div>
+                <div class="stat-val"><span id="valI">0.12</span>A</div>
+            </div>
+            <div class="stat-card danger">
+                <div>Resistance (R)</div>
+                <div class="stat-val"><span id="valR">50</span>Ω</div>
+            </div>
+            <div class="stat-card success">
+                <div>Power (P)</div>
+                <div class="stat-val"><span id="valP">0.72</span>W</div>
+            </div>
+        </div>
+
+        <h3 style="margin-top: 20px;">Circuit Controls</h3>
+        
+        <div class="control-group">
+            <label for="voltageSlider">Voltage (V): <span id="vDisp" style="color:var(--accent-color)">6.0</span> V</label>
+            <input type="range" id="voltageSlider" min="1" max="24" step="0.5" value="6" oninput="calculateCircuit()">
+        </div>
+
+        <div class="control-group">
+            <label for="resistanceSlider">Resistance (R): <span id="rDisp" style="color:var(--danger)">50</span> Ω</label>
+            <input type="range" id="resistanceSlider" min="5" max="200" step="5" value="50" oninput="calculateCircuit()">
+        </div>
+    </div>
+
+    <!-- 4. THE 100-QUESTION QUIZ -->
+    <div class="quiz-box">
+        <h3>100-Question Science Challenge</h3>
+        <p id="questionProgress" style="font-weight: bold; color: var(--accent-color); margin-bottom: 10px;">Question 1 / 100</p>
+        <div id="quiz-body">
+            <p id="question" style="font-weight: bold; font-size: 1.05em;">Loading question...</p>
+            <div id="options"></div>
+        </div>
+        <div id="quizResponse"></div>
+    </div>
+
+    <div class="copyright-footer">
+        © 2026 Ahmed AI Technology. Designed & Engineered by Ahmed Ramy (Moody).
+    </div>
+</div>
+
+<script>
+    function calculateCircuit() {
+        const v = parseFloat(document.getElementById('voltageSlider').value);
+        const r = parseFloat(document.getElementById('resistanceSlider').value);
+
+        const i = v / r;
+        const p = v * i;
+
+        document.getElementById('vDisp').innerText = v.toFixed(1);
+        document.getElementById('rDisp').innerText = r.toFixed(0);
+
+        document.getElementById('valV').innerText = v.toFixed(1);
+        document.getElementById('valI').innerText = i.toFixed(2);
+        document.getElementById('valR').innerText = r.toFixed(0);
+        document.getElementById('valP').innerText = p.toFixed(2);
+
+        const bulb = document.getElementById('bulb');
+        const wire = document.getElementById('wireFlow');
+
+        const brightness = Math.min(p / 5, 1); 
+        const glowRadius = Math.min(p * 8, 35);
+        bulb.style.filter = `drop-shadow(0 0 ${glowRadius}px rgba(241, 196, 15, ${brightness + 0.2}))`;
+        bulb.style.opacity = Math.max(0.3, brightness);
+
+        const flowSpeed = Math.max(0.1, 2 / (i * 5));
+        wire.style.animationDuration = `${flowSpeed}s`;
+    }
+
+    // 100-Question Quiz Engine
+    let currentQuestionIndex = 0;
+    const totalQuestions = 100;
+    let currentCorrectAnswer = "";
+
+    const conceptQuestions = [
+        { q: "If Voltage (V) increases while Resistance (R) stays constant, what happens to Current (I)?", a: "Increases", ops: ["Increases", "Decreases", "Stays the Same"] },
+        { q: "If Resistance (R) increases while Voltage (V) stays constant, what happens to Current (I)?", a: "Decreases", ops: ["Increases", "Decreases", "Stays the Same"] },
+        { q: "What is the unit of Electrical Power?", a: "Watts (W)", ops: ["Volts (V)", "Amperes (A)", "Watts (W)", "Ohms (Ω)"] },
+        { q: "What is the unit of Electrical Resistance?", a: "Ohms (Ω)", ops: ["Volts (V)", "Amperes (A)", "Watts (W)", "Ohms (Ω)"] },
+        { q: "What is the unit of Electrical Current?", a: "Amperes (A)", ops: ["Volts (V)", "Amperes (A)", "Watts (W)", "Ohms (Ω)"] },
+        { q: "Which formula calculates Voltage using Ohm's Law?", a: "V = I × R", ops: ["V = I × R", "V = I / R", "V = R / I"] },
+        { q: "Which formula calculates Power?", a: "P = V × I", ops: ["P = V × I", "P = V / I", "P = I / V"] },
+        { q: "If Current (I) increases and Voltage (V) remains constant, Power (P) will...", a: "Increase", ops: ["Increase", "Decrease", "Stay the Same"] }
+    ];
+
+    function loadQuestion() {
+        if (currentQuestionIndex >= totalQuestions) {
+            document.getElementById('quiz-body').innerHTML = `
+                <h2 style="color:var(--gold)">CHALLENGE COMPLETE! 🏆</h2>
+                <p style="font-size:1.1em;">You successfully answered all 100 questions!</p>
+                <button class="quiz-btn" onclick="restartQuiz()">Start Over (100 Questions)</button>
+            `;
+            document.getElementById('questionProgress').innerText = "100 / 100 Completed";
+            document.getElementById('quizResponse').innerText = "";
+            return;
+        }
+
+        document.getElementById('questionProgress').innerText = `Question ${currentQuestionIndex + 1} / ${totalQuestions}`;
+        document.getElementById('quizResponse').innerText = "";
+
+        const type = Math.floor(Math.random() * 4);
+
+        if (type === 0) {
+            const item = conceptQuestions[Math.floor(Math.random() * conceptQuestions.length)];
+            document.getElementById('question').innerText = item.q;
+            currentCorrectAnswer = item.a;
+            renderOptions(shuffleArray([...item.ops]));
+        } else if (type === 1) {
+            const i = (Math.floor(Math.random() * 10) + 1) * 0.5;
+            const r = (Math.floor(Math.random() * 20) + 1) * 5;
+            const v = (i * r).toFixed(1);
+            document.getElementById('question').innerText = `Calculate Voltage (V) if Current (I) = ${i}A and Resistance (R) = ${r}Ω:`;
+            currentCorrectAnswer = `${v} V`;
+            
+            const wrong1 = (parseFloat(v) + 5).toFixed(1) + " V";
+            const wrong2 = Math.max(1, (parseFloat(v) - 3)).toFixed(1) + " V";
+            renderOptions(shuffleArray([currentCorrectAnswer, wrong1, wrong2]));
+        } else if (type === 2) {
+            const v = (Math.floor(Math.random() * 10) + 1) * 6;
+            const r = (Math.floor(Math.random() * 6) + 1) * 10;
+            const i = (v / r).toFixed(2);
+            document.getElementById('question').innerText = `Calculate Current (I) if Voltage (V) = ${v}V and Resistance (R) = ${r}Ω:`;
+            currentCorrectAnswer = `${i} A`;
+            
+            const wrong1 = (parseFloat(i) + 0.25).toFixed(2) + " A";
+            const wrong2 = Math.max(0.05, (parseFloat(i) - 0.15)).toFixed(2) + " A";
+            renderOptions(shuffleArray([currentCorrectAnswer, wrong1, wrong2]));
+        } else {
+            const v = (Math.floor(Math.random() * 5) + 1) * 5;
+            const i = (Math.floor(Math.random() * 5) + 1) * 0.2;
+            const p = (v * i).toFixed(2);
+            document.getElementById('question').innerText = `Calculate Power (P) if Voltage (V) = ${v}V and Current (I) = ${i.toFixed(1)}A:`;
+            currentCorrectAnswer = `${p} W`;
+            
+            const wrong1 = (parseFloat(p) + 1.5).toFixed(2) + " W";
+            const wrong2 = Math.max(0.1, (parseFloat(p) - 0.8)).toFixed(2) + " W";
+            renderOptions(shuffleArray([currentCorrectAnswer, wrong1, wrong2]));
+        }
+    }
+
+    function renderOptions(options) {
+        const opsDiv = document.getElementById('options');
+        opsDiv.innerHTML = options.map(opt => `<button class="quiz-btn" onclick="checkAnswer('${opt}')">${opt}</button>`).join('');
+    }
+
+    function checkAnswer(ans) {
+        const resp = document.getElementById('quizResponse');
+        if (ans === currentCorrectAnswer) {
+            resp.innerHTML = "<span style='color:var(--success)'>Correct! Next Question... 🚀</span>";
+            currentQuestionIndex++;
+            setTimeout(loadQuestion, 1000);
+        } else {
+            resp.innerHTML = "<span style='color:var(--danger)'>Incorrect! Try again. ❌</span>";
+        }
+    }
+
+    function restartQuiz() {
+        currentQuestionIndex = 0;
+        document.getElementById('quiz-body').innerHTML = `
+            <p id="question" style="font-weight: bold; font-size: 1.05em;">Loading question...</p>
+            <div id="options"></div>
+        `;
+        loadQuestion();
+    }
+
+    function shuffleArray(array) {
+        return array.sort(() => Math.random() - 0.5);
+    }
+
+    window.onload = function() {
+        calculateCircuit();
+        loadQuestion();
+    };
+</script>
+
+</body>
+</html>
