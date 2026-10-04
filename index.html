@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ohm's Law & Power Lab | Ahmed AI</title>
+    <title>Ohm's Law & Power Lab</title>
     <style>
         :root {
             --primary-color: #0f172a;
@@ -13,6 +13,10 @@
             --gold: #f1c40f;
             --danger: #e74c3c;
             --success: #2ecc71;
+            --green-bg: #e8f5e9;
+            --green-border: #2e7d32;
+            --red-bg: #ffebee;
+            --red-border: #c62828;
         }
 
         * {
@@ -72,7 +76,7 @@
             letter-spacing: 0.5px;
         }
 
-        /* Parameter Table Fitting Styles */
+        /* 4-Column Table Styles */
         .table-responsive {
             width: 100%;
             margin-top: 10px;
@@ -82,12 +86,12 @@
             width: 100%;
             table-layout: fixed;
             border-collapse: collapse;
-            font-size: 0.8em;
+            font-size: 0.85em;
         }
 
         table.fit-table th, table.fit-table td {
             border: 1px solid #cbd5e1;
-            padding: 6px 4px;
+            padding: 8px 6px;
             text-align: center;
             word-wrap: break-word;
             overflow-wrap: break-word;
@@ -101,26 +105,20 @@
 
         table.fit-table tr:nth-child(even) { background-color: #f1f5f9; }
 
-        /* Specific Column Widths */
-        table.fit-table col.col-sym { width: 12%; }
-        table.fit-table col.col-qty { width: 22%; }
-        table.fit-table col.col-unit { width: 18%; }
-        table.fit-table col.col-form { width: 20%; }
-        table.fit-table col.col-eff { width: 28%; }
+        table.fit-table col.col-sym { width: 18%; }
+        table.fit-table col.col-qty { width: 28%; }
+        table.fit-table col.col-unit { width: 26%; }
+        table.fit-table col.col-form { width: 28%; }
 
         @media (max-width: 500px) {
-            table.fit-table {
-                font-size: 0.72em;
-            }
-            table.fit-table th, table.fit-table td {
-                padding: 5px 2px;
-            }
+            table.fit-table { font-size: 0.78em; }
+            table.fit-table th, table.fit-table td { padding: 6px 3px; }
             .container { padding: 12px; }
         }
 
-        /* Takeaways / Knowledge Box */
+        /* Definitions List */
         .knowledge-list {
-            margin: 10px 0 0 0;
+            margin: 10px 0 20px 0;
             padding-left: 20px;
             line-height: 1.6;
             font-size: 0.9em;
@@ -128,7 +126,69 @@
         }
 
         .knowledge-list li {
-            margin-bottom: 8px;
+            margin-bottom: 10px;
+        }
+
+        /* Compare & Contrast Section */
+        .compare-header {
+            text-transform: uppercase;
+            font-size: 0.8em;
+            letter-spacing: 1.5px;
+            color: #1e3a8a;
+            font-weight: 800;
+            margin-top: 15px;
+            margin-bottom: 2px;
+        }
+
+        .compare-title {
+            font-size: 1.35em;
+            font-weight: 800;
+            color: #0f172a;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 600px) {
+            .cards-grid { grid-template-columns: 1fr; }
+        }
+
+        .compare-card {
+            border-radius: 10px;
+            padding: 16px;
+            box-sizing: border-box;
+        }
+
+        .compare-card.direct {
+            background-color: var(--green-bg);
+            border: 2px solid var(--green-border);
+        }
+
+        .compare-card.inverse {
+            background-color: var(--red-bg);
+            border: 2px solid var(--red-border);
+        }
+
+        .compare-card h4 {
+            margin-top: 0;
+            font-size: 1.1em;
+            margin-bottom: 12px;
+        }
+
+        .compare-card.direct h4 { color: #1b5e20; }
+        .compare-card.inverse h4 { color: #b71c1c; }
+
+        .compare-card p {
+            margin: 0;
+            font-size: 0.9em;
+            line-height: 1.5;
+            color: #263238;
         }
 
         /* Dynamic Visualizer & Controls */
@@ -252,7 +312,7 @@
     <h1 class="animated-title">Ohm’s Law & Power Lab</h1>
     <p class="subtitle">Mastering Voltage (V), Current (I), Resistance (R), and Power (P)</p>
 
-    <!-- 1. FIRST BOX: Parameter Relationship Matrix -->
+    <!-- 1. FIRST BOX: Parameter Relationship Matrix (Effect of Increasing removed) -->
     <div class="panel">
         <h3>Parameter Relationship Matrix</h3>
         <div class="table-responsive">
@@ -262,7 +322,6 @@
                     <col class="col-qty">
                     <col class="col-unit">
                     <col class="col-form">
-                    <col class="col-eff">
                 </colgroup>
                 <thead>
                     <tr>
@@ -270,7 +329,6 @@
                         <th>Quantity</th>
                         <th>Unit</th>
                         <th>Formula</th>
-                        <th>Effect of Increasing</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -279,28 +337,24 @@
                         <td>Voltage</td>
                         <td>Volts (V)</td>
                         <td>V = I × R</td>
-                        <td>Increases Current (I) & Power (P)</td>
                     </tr>
                     <tr>
                         <td><strong>I</strong></td>
                         <td>Current</td>
                         <td>Amperes (A)</td>
                         <td>I = V / R</td>
-                        <td>Increases Power (P) output</td>
                     </tr>
                     <tr>
                         <td><strong>R</strong></td>
                         <td>Resistance</td>
                         <td>Ohms (Ω)</td>
                         <td>R = V / I</td>
-                        <td>Decreases Current (I) & Power (P)</td>
                     </tr>
                     <tr>
                         <td><strong>P</strong></td>
                         <td>Power</td>
                         <td>Watts (W)</td>
                         <td>P = V × I</td>
-                        <td>Measures total energy/sec</td>
                     </tr>
                 </tbody>
             </table>
@@ -310,12 +364,27 @@
     <!-- 2. UNDER FIRST BOX: What We Know After Reading This Matrix -->
     <div class="panel">
         <h3>What We Know After Reading This Matrix</h3>
+        
         <ul class="knowledge-list">
-            <li><strong>Voltage (V):</strong> Acts as the pressure pushing electrical charges through a circuit. Higher Voltage results in greater Current flow and increased Power consumption.</li>
-            <li><strong>Current (I):</strong> Represents the flow rate of electric charge. It is directly proportional to Voltage and inversely proportional to Resistance.</li>
-            <li><strong>Resistance (R):</strong> Opposes current flow within the circuit. Increasing Resistance decreases Current and total Power output.</li>
-            <li><strong>Power (P):</strong> Measures the total electrical work performed per second ($P = V \times I$), combining force (Voltage) and flow rate (Current).</li>
+            <li><strong>Voltage (V):</strong> the potential difference between two points in a circuit — the “push” that causes charges to move</li>
+            <li><strong>Power (P):</strong> Electric power is the rate at which electrical energy is changed into other forms of energy</li>
+            <li><strong>Resistance (R):</strong> Resistance is the opposition to the flow of electric charge.</li>
+            <li><strong>Current (I):</strong> The rate at which charges pass a given point</li>
         </ul>
+
+        <div class="compare-header">COMPARE & CONTRAST</div>
+        <div class="compare-title">Two Very Different Relationships</div>
+
+        <div class="cards-grid">
+            <div class="compare-card direct">
+                <h4>Current vs. Voltage</h4>
+                <p><strong>STRAIGHT LINE.</strong> As voltage goes up, current goes up at the SAME steady rate. This is a <strong>DIRECT</strong> relationship.</p>
+            </div>
+            <div class="compare-card inverse">
+                <h4>Current vs. Resistance</h4>
+                <p><strong>CURVE.</strong> As resistance goes up, current goes down — quickly at first, then more slowly. This is an <strong>INVERSE</strong> relationship.</p>
+            </div>
+        </div>
     </div>
 
     <!-- 3. THE GAME / SIMULATOR -->
@@ -371,7 +440,7 @@
     </div>
 
     <div class="copyright-footer">
-        © 2026 Ahmed AI Technology. Designed & Engineered by Ahmed Ramy (Moody).
+        © 2026 Ahmed AI Technology.
     </div>
 </div>
 
